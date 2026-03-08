@@ -1,56 +1,75 @@
 using UnityEngine;
-using UnityEngine.XR.Interaction.Toolkit; // Belangrijk voor VR
+using UnityEngine.XR.Interaction.Toolkit;
 
-[RequireComponent(typeof(UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable))]
 public class ModularWobble : MonoBehaviour
 {
     [Header("Wobble Settings")]
-    public bool isWobbling = true;
     public float amplitude = 0.05f;
     public float speed = 1.5f;
     public float offset = 0f;
+
+    // Interna state tracking
+    private bool isWobbling = false;
+    private bool hasBeenGrabbedOnce = false;
+    private bool isCurrentlyGrabbed = false;
 
     private Vector3 basePosition;
     private UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable grabInteractable;
 
     void Start()
     {
-        basePosition = transform.localPosition;
-        
-        // Retroeve the XR Grab Interactable component
+        // Search the grabbable, wherever it is
         grabInteractable = GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable>();
-        
-        // Listen to Grab and release
-        grabInteractable.selectEntered.AddListener(OnGrab);
-        grabInteractable.selectExited.AddListener(OnRelease);
-    }
+        if (grabInteractable == null) grabInteractable = GetComponentInParent<UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable>();
+        if (grabInteractable == null) grabInteractable = GetComponentInChildren<UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable>();
 
-    void Update()
-    {
-        if (!isWobbling) return;
-
-        float newY = basePosition.y + Mathf.Sin((Time.time * speed) + offset) * amplitude;
-        transform.localPosition = new Vector3(transform.localPosition.x, newY, transform.localPosition.z);
+        // Listen to the hands
+        if (grabInteractable != null)
+        {
+            grabInteractable.selectEntered.AddListener(OnGrab);
+            grabInteractable.selectExited.AddListener(OnRelease);
+        }
     }
 
     private void OnGrab(SelectEnterEventArgs args)
     {
-        // Stop wobble onGrab
-        isWobbling = false;
+        isCurrentlyGrabbed = true;
+        hasBeenGrabbedOnce = true;
+        isWobbling = false; // Stop the wobble always when it is in your hand
     }
 
     private void OnRelease(SelectExitEventArgs args)
     {
-        // Set new basePos after release
-        basePosition = transform.localPosition;
-        
-        // start Wobbling again after.
-        isWobbling = true; 
+        isCurrentlyGrabbed = false;
+
+        // While we release, and the script is still going (so not clicked in yet)
+        if (this.enabled)
+        {
+            isWobbling = true; 
+            basePosition = transform.localPosition; // Retrieve the new fall location as anchor point
+        }
+    }
+
+    void Update()
+    {
+        // Only wobble if we have released the object, AND its not in our hands
+        if (!isWobbling || isCurrentlyGrabbed || !hasBeenGrabbedOnce) return;
+
+        // The movement
+        float newY = basePosition.y + Mathf.Sin((Time.time * speed) + offset) * amplitude;
+        transform.localPosition = new Vector3(transform.localPosition.x, newY, transform.localPosition.z);
+    }
+
+    // Will be called by the manager during next round
+    public void ResetForNewRound()
+    {
+        hasBeenGrabbedOnce = false;
+        isCurrentlyGrabbed = false;
+        isWobbling = false;
     }
 
     void OnDestroy()
     {
-
         if (grabInteractable != null)
         {
             grabInteractable.selectEntered.RemoveListener(OnGrab);

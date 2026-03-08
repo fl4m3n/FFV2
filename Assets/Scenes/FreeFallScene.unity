@@ -383,7 +383,7 @@ Transform:
   m_GameObject: {fileID: 107392449}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.705, y: 0.5, z: 2.073}
+  m_LocalPosition: {x: 3.88, y: 0.5, z: 9.35}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -421,6 +421,9 @@ MonoBehaviour:
   currentPhase: 2
   neckSocket: {fileID: 857999389}
   backpackSocket: {fileID: 1483886411}
+  headObj: {fileID: 1864557611}
+  backpackObj: {fileID: 863456799}
+  bodyObj: {fileID: 1474340479}
   OnStartMenuEnter:
     m_PersistentCalls:
       m_Calls: []
@@ -896,6 +899,7 @@ GameObject:
   - component: {fileID: 863456805}
   - component: {fileID: 863456804}
   - component: {fileID: 863456806}
+  - component: {fileID: 863456807}
   m_Layer: 0
   m_Name: FakeBackpack
   m_TagString: Untagged
@@ -912,7 +916,7 @@ Transform:
   m_GameObject: {fileID: 863456799}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.146, y: 0.988, z: 3.152}
+  m_LocalPosition: {x: 8.46, y: 0.988, z: 1.42}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1164,10 +1168,83 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 39537cda8f5c41340a9a887b507a23d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ModularWobble
-  isWobbling: 1
   amplitude: 0.05
   speed: 1.5
   offset: 0
+--- !u!114 &863456807
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 863456799}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a1a347da42622646b3c1bc8091c7cd6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AerodynamicPart
+  isFreefalling: 0
+  hasBeenGrabbed: 0
+  playerTarget: {fileID: 1993077616}
+  anchorTarget: {fileID: 871294532}
+  heightBasedOnDistance:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 52.54998
+      value: -17.10943
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  verticalSpeed: 2
+  horizontalSpeed: 1
+  tumbleSpeed: {x: 10, y: 15, z: 5}
+--- !u!1 &871294531
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 871294532}
+  m_Layer: 0
+  m_Name: Anchor_Backpack
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &871294532
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 871294531}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 5.395, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2128066469}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1107596173
 GameObject:
   m_ObjectHideFlags: 0
@@ -1180,7 +1257,7 @@ GameObject:
   - component: {fileID: 1107596176}
   - component: {fileID: 1107596175}
   - component: {fileID: 1107596174}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Floor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6195,6 +6272,7 @@ GameObject:
   - component: {fileID: 1474340485}
   - component: {fileID: 1474340484}
   - component: {fileID: 1474340486}
+  - component: {fileID: 1474340487}
   m_Layer: 0
   m_Name: FakeBody
   m_TagString: Untagged
@@ -6467,10 +6545,52 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 39537cda8f5c41340a9a887b507a23d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ModularWobble
-  isWobbling: 0
   amplitude: 0.05
   speed: 1.5
   offset: 0
+--- !u!114 &1474340487
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1474340479}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a1a347da42622646b3c1bc8091c7cd6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AerodynamicPart
+  isFreefalling: 0
+  hasBeenGrabbed: 0
+  playerTarget: {fileID: 1993077616}
+  anchorTarget: {fileID: 1690825904}
+  heightBasedOnDistance:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 122.884476
+      value: -9.940048
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  verticalSpeed: 2
+  horizontalSpeed: 1
+  tumbleSpeed: {x: 10, y: 15, z: 5}
 --- !u!1 &1483886407
 GameObject:
   m_ObjectHideFlags: 0
@@ -6610,7 +6730,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 39537cda8f5c41340a9a887b507a23d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ModularWobble
-  isWobbling: 1
   amplitude: 0.1
   speed: 2
   offset: 0
@@ -6646,6 +6765,37 @@ Transform:
   - {fileID: 8679259296010825374}
   - {fileID: 6578347282620381965}
   m_Father: {fileID: 1716152065}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1690825903
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1690825904}
+  m_Layer: 0
+  m_Name: Anchor_Body
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1690825904
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1690825903}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 5.11, y: 0, z: 3.84}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2128066469}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1716152064
 GameObject:
@@ -6851,7 +7001,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 39537cda8f5c41340a9a887b507a23d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ModularWobble
-  isWobbling: 1
   amplitude: 0.05
   speed: 1.5
   offset: 0
@@ -6977,6 +7126,7 @@ GameObject:
   - component: {fileID: 1864557617}
   - component: {fileID: 1864557616}
   - component: {fileID: 1864557618}
+  - component: {fileID: 1864557619}
   m_Layer: 0
   m_Name: FakeHeadArea
   m_TagString: Untagged
@@ -7245,10 +7395,52 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 39537cda8f5c41340a9a887b507a23d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ModularWobble
-  isWobbling: 1
   amplitude: 0.05
   speed: 1.5
   offset: 0
+--- !u!114 &1864557619
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1864557611}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a1a347da42622646b3c1bc8091c7cd6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AerodynamicPart
+  isFreefalling: 0
+  hasBeenGrabbed: 0
+  playerTarget: {fileID: 1993077616}
+  anchorTarget: {fileID: 2046972894}
+  heightBasedOnDistance:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: -0.037807465
+      value: 0.0031433105
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 114.432434
+      value: -28.640444
+      inSlope: -0.15193984
+      outSlope: -0.15193984
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.4410005
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  verticalSpeed: 2
+  horizontalSpeed: 1
+  tumbleSpeed: {x: 10, y: 15, z: 5}
 --- !u!1001 &1928816429
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7334,6 +7526,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 654058724054141499, guid: d6878e1999eb4b44a9f5a263af86c185, type: 3}
+      propertyPath: m_PhysicsLayerMask.m_Bits
+      value: 129
+      objectReference: {fileID: 0}
     - target: {fileID: 1386082259481429544, guid: d6878e1999eb4b44a9f5a263af86c185, type: 3}
       propertyPath: m_InteractionLayers.m_Bits
       value: 7
@@ -7404,11 +7600,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3557840064565183711, guid: d6878e1999eb4b44a9f5a263af86c185, type: 3}
       propertyPath: m_PhysicsLayerMask.m_Bits
-      value: 1
+      value: 129
       objectReference: {fileID: 0}
     - target: {fileID: 5359434741994886739, guid: d6878e1999eb4b44a9f5a263af86c185, type: 3}
       propertyPath: m_InteractionLayers.m_Bits
       value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 5786981526182599232, guid: d6878e1999eb4b44a9f5a263af86c185, type: 3}
+      propertyPath: m_PhysicsLayerMask.m_Bits
+      value: 129
+      objectReference: {fileID: 0}
+    - target: {fileID: 7757314054486101461, guid: d6878e1999eb4b44a9f5a263af86c185, type: 3}
+      propertyPath: m_PhysicsLayerMask.m_Bits
+      value: 129
       objectReference: {fileID: 0}
     - target: {fileID: 8227192243087186103, guid: d6878e1999eb4b44a9f5a263af86c185, type: 3}
       propertyPath: m_InteractionLayers.m_Bits
@@ -7606,6 +7810,71 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 839fa55fbe2e7794ba39644ce79dc258, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PartLocker
+--- !u!1 &2046972893
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2046972894}
+  m_Layer: 0
+  m_Name: Anchor_Head
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2046972894
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2046972893}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -3.55, y: 0, z: 5.47}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2128066469}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2128066468
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2128066469}
+  m_Layer: 0
+  m_Name: '[Freefall_Anchors]'
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2128066469
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2128066468}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 2046972894}
+  - {fileID: 871294532}
+  - {fileID: 1690825904}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &1140147314529817695
 Transform:
   m_ObjectHideFlags: 0
@@ -8292,7 +8561,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 39537cda8f5c41340a9a887b507a23d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ModularWobble
-  isWobbling: 1
   amplitude: 0.05
   speed: 1.5
   offset: 0
@@ -8401,3 +8669,4 @@ SceneRoots:
   - {fileID: 1928816429}
   - {fileID: 3570513711536322958}
   - {fileID: 235866874}
+  - {fileID: 2128066469}

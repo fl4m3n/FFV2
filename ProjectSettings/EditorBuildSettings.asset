@@ -11,9 +11,12 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/BasicFallingScene.unity
     guid: 52987d3234bfeb24ca4463e2d2660ed1
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/RobotScene.unity
     guid: 60cb31bbaaa99ab49a3d19aea2101bc9
+  - enabled: 1
+    path: Assets/Scenes/FreeFallScene.unity
+    guid: 4984c96f19411ba4a8134bd23873a3e9
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: c348712bda248c246b8c49b3db54643f, type: 3}
     com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 4af3d4197d44e744ba6fe3477a6cd76e, type: 2}

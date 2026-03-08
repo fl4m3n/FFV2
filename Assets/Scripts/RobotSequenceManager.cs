@@ -1,26 +1,22 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.XR.Interaction.Toolkit;
 
 
 public class RobotSequenceManager : MonoBehaviour
 {
-    // 5 fases of the game
-    public enum GamePhase 
-    {
-        StartMenu,
-        IntroVideo,
-        FreefallAssembly,
-        Parachute,
-        EndCredits
-    }
-
-    [Header("Current State")]
+    public enum GamePhase { StartMenu, IntroVideo, FreefallAssembly, Parachute, EndCredits }
     public GamePhase currentPhase;
 
-    [Header("EVE Assembly Requirements")]
+    [Header("EVE Sockets")]
     public UnityEngine.XR.Interaction.Toolkit.Interactors.XRSocketInteractor neckSocket;
     public UnityEngine.XR.Interaction.Toolkit.Interactors.XRSocketInteractor backpackSocket;
+
+    [Header("Alle Robot Onderdelen")]
+    public GameObject headObj;
+    public GameObject backpackObj;
+    public GameObject bodyObj; // De Body is nu ook een onderdeel!
 
     [Header("Phase Events")]
     public UnityEvent OnStartMenuEnter;
@@ -29,95 +25,123 @@ public class RobotSequenceManager : MonoBehaviour
     public UnityEvent OnParachuteEnter;
     public UnityEvent OnEndCreditsEnter;
 
-    private void Start()
+    private Vector3 headStartPos, backpackStartPos, bodyStartPos;
+
+    void Start()
     {
-        // If the game starts; force teh startmenu
-        // SwitchPhase(GamePhase.StartMenu);
+        // Bewaar de allereerste startposities voor de reset later
+        headStartPos = headObj.transform.position;
+        backpackStartPos = backpackObj.transform.position;
+        bodyStartPos = bodyObj.transform.position;
+
         SwitchPhase(GamePhase.FreefallAssembly);
     }
 
-    // Logic switch fase
     public void SwitchPhase(GamePhase newPhase)
     {
         currentPhase = newPhase;
         Debug.Log("Game Phase is nu: " + currentPhase.ToString());
 
-       
         switch (currentPhase)
         {
             case GamePhase.StartMenu:
+                ResetRobotForNewRound(); // Zorg dat EVE weer in stukken ligt!
                 OnStartMenuEnter.Invoke();
                 break;
 
             case GamePhase.IntroVideo:
                 OnIntroVideoEnter.Invoke();
-                // Skip fit after 1 sec.
                 StartCoroutine(SkipIntroForNow());
                 break;
 
             case GamePhase.FreefallAssembly:
                 OnFreefallAssemblyEnter.Invoke();
+                
+                // Zet het vallen AAN voor alle 3 de onderdelen
+                SetScriptsActive(headObj, true);
+                SetScriptsActive(backpackObj, true);
+                SetScriptsActive(bodyObj, true);
                 break;
 
             case GamePhase.Parachute:
+                // HIER STOPPEN WE HET WOBBELEN VAN DE GEHELE EVE!
+                ModularWobble bodyWobble = bodyObj.GetComponent<ModularWobble>();
+                if (bodyWobble != null) bodyWobble.enabled = false;
+
                 OnParachuteEnter.Invoke();
-                // Simulate parachute and then skip
-                StartCoroutine(TransitionToCreditsDelay(2f));
+                StartCoroutine(TransitionToCreditsDelay(5f));
                 break;
 
             case GamePhase.EndCredits:
                 OnEndCreditsEnter.Invoke();
-                // Show credits; and go back to start.
-                StartCoroutine(BackToMenuDelay(4f));
+                StartCoroutine(BackToMenuDelay(4f)); // Gaat na credits terug naar StartMenu (dus reset!)
                 break;
         }
     }
 
-    // --- Public triggers (to use via buttons or sockets) ---
-
-    // This is for the startgame button
-    public void TriggerStartGame()
-    {
-        if (currentPhase == GamePhase.StartMenu)
-        {
-            SwitchPhase(GamePhase.IntroVideo);
-        }
-    }
-
-    // This function is called if an object clicks into a socket
     public void CheckAssemblyProgress()
     {
-        // Check phase
         if (currentPhase != GamePhase.FreefallAssembly) return;
 
-        // Check if both sockets are filled
-        bool isNeckFull = neckSocket.hasSelection;
-        bool isBackpackFull = backpackSocket.hasSelection;
-
-        if (isNeckFull && isBackpackFull)
+        if (neckSocket.hasSelection && backpackSocket.hasSelection)
         {
-            Debug.Log("EVE is compleet! Start parachute fase.");
+            Debug.Log("EVE is compleet samengebouwd!");
             SwitchPhase(GamePhase.Parachute);
         }
     }
 
-    // --- Temporary Timers (Coroutines) ---
-
-    private IEnumerator SkipIntroForNow()
+    // --- DE MAGISCHE RESET FUNCTIE VOOR DE LOOP ---
+    private void ResetRobotForNewRound()
     {
-        yield return new WaitForSeconds(1f); // Korte pauze
-        SwitchPhase(GamePhase.FreefallAssembly);
+        // Haal de items UIT de sockets als ze daar in zitten
+        if (neckSocket.hasSelection) neckSocket.interactionManager.CancelInteractorSelection((UnityEngine.XR.Interaction.Toolkit.Interactors.IXRSelectInteractor)neckSocket);
+        if (backpackSocket.hasSelection) backpackSocket.interactionManager.CancelInteractorSelection((UnityEngine.XR.Interaction.Toolkit.Interactors.IXRSelectInteractor)backpackSocket);
+
+        // Reset elk object: ontkoppel ze, zet scripts aan, en zet ze op hun startplek
+        ResetSinglePart(headObj, headStartPos);
+        ResetSinglePart(backpackObj, backpackStartPos);
+        ResetSinglePart(bodyObj, bodyStartPos);
     }
 
-    private IEnumerator TransitionToCreditsDelay(float delay)
+    private void ResetSinglePart(GameObject part, Vector3 startPos)
     {
-        yield return new WaitForSeconds(delay);
-        SwitchPhase(GamePhase.EndCredits);
+        // 1. Maak hem weer los (geen child meer van de body/socket)
+        part.transform.SetParent(null); 
+        
+        // 2. Zet hem terug in de lucht
+        part.transform.position = startPos; 
+
+        // 3. Zet fysica weer aan
+        Rigidbody rb = part.GetComponent<Rigidbody>();
+        if (rb != null) rb.isKinematic = false;
+
+        // 4. Zet vastpakken weer aan
+        UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable grab = part.GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable>();
+        if (grab != null) grab.enabled = true;
+
+        // 5. Reset de interne kill-switches in onze scripts
+        AerodynamicPart aero = part.GetComponent<AerodynamicPart>();
+        if (aero != null)
+        {
+            aero.enabled = true;
+            aero.hasBeenGrabbed = false;
+        }
+
+        ModularWobble wobble = part.GetComponent<ModularWobble>();
+        if (wobble != null)
+        {
+            wobble.enabled = true;
+            wobble.ResetForNewRound(); // Roept de functie aan die we in de vorige stap maakten
+        }
     }
 
-    private IEnumerator BackToMenuDelay(float delay)
+    private void SetScriptsActive(GameObject part, bool state)
     {
-        yield return new WaitForSeconds(delay);
-        SwitchPhase(GamePhase.StartMenu);
+        AerodynamicPart aero = part.GetComponent<AerodynamicPart>();
+        if (aero != null) aero.SetFreefallState(state);
     }
+
+    private IEnumerator SkipIntroForNow() { yield return new WaitForSeconds(1f); SwitchPhase(GamePhase.FreefallAssembly); }
+    private IEnumerator TransitionToCreditsDelay(float delay) { yield return new WaitForSeconds(delay); SwitchPhase(GamePhase.EndCredits); }
+    private IEnumerator BackToMenuDelay(float delay) { yield return new WaitForSeconds(delay); SwitchPhase(GamePhase.StartMenu); }
 }

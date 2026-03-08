@@ -3,30 +3,47 @@ using UnityEngine.XR.Interaction.Toolkit;
 
 public class PartLocker : MonoBehaviour
 {
-    // When an object is tried to 'lock in' the following runs:
     public void LockPart(SelectEnterEventArgs args)
     {
-        // 1. Which object has been clicked in:
         GameObject attachedPart = args.interactableObject.transform.gameObject;
 
-        // 2. Remove the possibility to grab it.
+        // 1. Turn off Aerodynamic script 
+        AerodynamicPart aeroScript = attachedPart.GetComponent<AerodynamicPart>();
+        if (aeroScript == null) aeroScript = attachedPart.GetComponentInChildren<AerodynamicPart>();
+        
+        if (aeroScript != null)
+        {
+            aeroScript.enabled = false; 
+        }
+
+        // 2. Stop the getting of the component
         UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable grabComp = attachedPart.GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable>();
         if (grabComp != null)
         {
-            Destroy(grabComp);
+            grabComp.enabled = false;
         }
 
-        // 3. Remove grafiti 
+        // 3.Make it a child of the body
+        attachedPart.transform.SetParent(this.transform);
+        
+        // 4. Reset  local pos so it snaps to the correct place
+        attachedPart.transform.localPosition = Vector3.zero;
+        attachedPart.transform.localRotation = Quaternion.identity;
+
+        // 5. Physics on kinematic
         Rigidbody rb = attachedPart.GetComponent<Rigidbody>();
         if (rb != null)
         {
-            Destroy(rb);
+            rb.isKinematic = true;
+        }
+        // Stop wobble definitive for this round
+        ModularWobble wobbleScript = attachedPart.GetComponent<ModularWobble>();
+        if (wobbleScript == null) wobbleScript = attachedPart.GetComponentInChildren<ModularWobble>();
+        if (wobbleScript != null)
+        {
+            wobbleScript.enabled = false;
         }
 
-        // 4. Visually attach it to the body
-        attachedPart.transform.SetParent(this.transform.parent);
-
-        // Optional: Sound of snapping in right here
-        Debug.Log(attachedPart.name + " is permanent vastgezet! Vast is vast.");
+        Debug.Log(attachedPart.name + " is perfect gelockt voor deze ronde!");
     }
 }
