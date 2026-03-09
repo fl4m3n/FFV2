@@ -1,19 +1,20 @@
 using UnityEngine;
 
-
 public class AerodynamicPart : MonoBehaviour
 {
     [Header("State")]
     public bool isFreefalling = false;
-    public bool hasBeenGrabbed = false; // KILL-SWITCH 
+    public bool hasBeenGrabbed = false; 
 
     [Header("Targets")]
-    public Transform playerTarget; 
+    public Transform playerTarget; // Dit is je XR Origin / Camera
     public Transform anchorTarget; 
 
     [Header("Catch-Up Logic (Y-Axis)")]
     public AnimationCurve heightBasedOnDistance; 
+    [Tooltip("Hoe snel het object naar zijn doel-hoogte gaat")]
     public float verticalSpeed = 2f;
+    [Tooltip("Hoe snel het object horizontaal naar zijn anker gaat")]
     public float horizontalSpeed = 1f;
 
     [Header("Tumbling (Rotation)")]
@@ -30,45 +31,38 @@ public class AerodynamicPart : MonoBehaviour
 
     void Update()
     {
-        // 1. Safetychecks
-        if (!isFreefalling || playerTarget == null || anchorTarget == null) return;
+        if (!isFreefalling || playerTarget == null || anchorTarget == null || hasBeenGrabbed) return;
 
-        // 2. definitive stop: Make sure it does not work once caught
-        if (hasBeenGrabbed) return;
-
-        // 3. CHECK moment of grabbing
         if (grabInteractable != null && grabInteractable.isSelected)
         {
-            // BOOM! Kill-switch activated
             hasBeenGrabbed = true; 
             return;
         }
 
-        // --- Tumbling logic ---
-
+        // --- 1. HORIZONTAL MOVEMENT (X, Z) ---
+        // Going to the X,Z of the anchor pointn
         float newX = Mathf.Lerp(transform.position.x, anchorTarget.position.x, Time.deltaTime * horizontalSpeed);
         float newZ = Mathf.Lerp(transform.position.z, anchorTarget.position.z, Time.deltaTime * horizontalSpeed);
 
+        // --- 2. Distance calc (XZ-vlak) ---
         Vector2 playerXZ = new Vector2(playerTarget.position.x, playerTarget.position.z);
         Vector2 partXZ = new Vector2(transform.position.x, transform.position.z);
         float distance = Vector2.Distance(playerXZ, partXZ);
 
-        float targetY = heightBasedOnDistance.Evaluate(distance);
+        // --- 3. relative height logics (Y) ---
+        float depthOffset = heightBasedOnDistance.Evaluate(distance);
+        float targetY = playerTarget.position.y - depthOffset; 
+        
         float newY = Mathf.Lerp(transform.position.y, targetY, Time.deltaTime * verticalSpeed);
 
+        // --- 4. applied ---
         transform.position = new Vector3(newX, newY, newZ);
         transform.Rotate(tumbleSpeed * Time.deltaTime, Space.Self);
     }
 
-    // This function can be called at the start of the round
     public void SetFreefallState(bool state)
     {
         isFreefalling = state;
-        
-        if (state == true)
-        {
-            // Reset kill-switch
-            hasBeenGrabbed = false; 
-        }
+        if (state == true) hasBeenGrabbed = false; 
     }
 }

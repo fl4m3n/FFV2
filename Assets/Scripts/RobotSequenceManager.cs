@@ -42,7 +42,7 @@ public class RobotSequenceManager : MonoBehaviour
         backpackStartPos = backpackObj.transform.position;
         bodyStartPos = bodyObj.transform.position;
 
-        SwitchPhase(GamePhase.StartMenu);
+        SwitchPhase(GamePhase.IntroVideo);
     }
 
     public void SwitchPhase(GamePhase newPhase)
@@ -160,7 +160,8 @@ public class RobotSequenceManager : MonoBehaviour
         if (xrOrigin != null && couchAnchor != null)
         {
             xrOrigin.position = couchAnchor.position;
-            Debug.Log("Speler moves to start pos!");
+            xrOrigin.rotation = couchAnchor.rotation;
+            Debug.Log("Player moves to start pos!");
         }
     }
     public void TriggerStartGame()
@@ -171,25 +172,25 @@ public class RobotSequenceManager : MonoBehaviour
 
     public void SetPassthroughMode(bool isActive)
 {
-    // We zoeken de AR Camera Background op de camera
+    // Searching for AR Cam Background
    
     arBackground = mainVRCamera.GetComponent<ARCameraBackground>();
 
     if (isActive)
     {
-        // 1. Maak de camera achtergrond transparant (Alpha = 0)
+        // 1. Make cam background transparant (Alpha = 0)
         mainVRCamera.clearFlags = CameraClearFlags.SolidColor;
         mainVRCamera.backgroundColor = new Color(0, 0, 0, 0); 
         
-        // 2. Zet de AR Background component AAN
+        // 2. SET AR Background ON
         if (arBackground != null) arBackground.enabled = true;
     }
     else
     {
-        // 1. Terug naar de Skybox (je virtuele wereld)
+        // 1. Back to Skybox
         mainVRCamera.clearFlags = CameraClearFlags.Skybox;
         
-        // 2. Zet de AR Background component UIT
+        // 2. Set AR BG off
         if (arBackground != null) arBackground.enabled = false;
     }
 }
