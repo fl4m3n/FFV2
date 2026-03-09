@@ -16,7 +16,7 @@ public class ModularWobble : MonoBehaviour
     private Vector3 basePosition;
     private UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable grabInteractable;
 
-    void Start()
+    void Awake()
     {
         // Search the grabbable, wherever it is
         grabInteractable = GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable>();
@@ -42,11 +42,19 @@ public class ModularWobble : MonoBehaviour
     {
         isCurrentlyGrabbed = false;
 
-        // While we release, and the script is still going (so not clicked in yet)
         if (this.enabled)
         {
             isWobbling = true; 
-            basePosition = transform.localPosition; // Retrieve the new fall location as anchor point
+            basePosition = transform.localPosition; 
+
+            // FIX: Zodra je hem loslaat, dwingen we de physics om direct stil te staan!
+            Rigidbody rb = GetComponent<Rigidbody>();
+            if (rb != null)
+            {
+                rb.isKinematic = true;
+                rb.linearVelocity = Vector3.zero; // (Of rb.velocity in oudere versies)
+                rb.angularVelocity = Vector3.zero;
+            }
         }
     }
 

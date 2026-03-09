@@ -13,10 +13,10 @@ public class RobotSequenceManager : MonoBehaviour
     public UnityEngine.XR.Interaction.Toolkit.Interactors.XRSocketInteractor neckSocket;
     public UnityEngine.XR.Interaction.Toolkit.Interactors.XRSocketInteractor backpackSocket;
 
-    [Header("Alle Robot Onderdelen")]
+    [Header("All Robot Objects")]
     public GameObject headObj;
     public GameObject backpackObj;
-    public GameObject bodyObj; // De Body is nu ook een onderdeel!
+    public GameObject bodyObj; // Body is main obj
 
     [Header("Phase Events")]
     public UnityEvent OnStartMenuEnter;
@@ -25,27 +25,31 @@ public class RobotSequenceManager : MonoBehaviour
     public UnityEvent OnParachuteEnter;
     public UnityEvent OnEndCreditsEnter;
 
+    [Header("Player Setup")]
+    public Transform xrOrigin; // XR Origin (whole rig)
+    public Transform couchAnchor; // Anchor of where it needs to restart
+
     private Vector3 headStartPos, backpackStartPos, bodyStartPos;
 
     void Start()
     {
-        // Bewaar de allereerste startposities voor de reset later
+        // Store the first positions for restart purposes
         headStartPos = headObj.transform.position;
         backpackStartPos = backpackObj.transform.position;
         bodyStartPos = bodyObj.transform.position;
 
-        SwitchPhase(GamePhase.FreefallAssembly);
+        SwitchPhase(GamePhase.StartMenu);
     }
 
     public void SwitchPhase(GamePhase newPhase)
     {
         currentPhase = newPhase;
-        Debug.Log("Game Phase is nu: " + currentPhase.ToString());
+        Debug.Log("Game Phase is now: " + currentPhase.ToString());
 
         switch (currentPhase)
         {
             case GamePhase.StartMenu:
-                ResetRobotForNewRound(); // Zorg dat EVE weer in stukken ligt!
+                ResetRobotForNewRound(); // Restore the robot
                 OnStartMenuEnter.Invoke();
                 break;
 
@@ -57,14 +61,14 @@ public class RobotSequenceManager : MonoBehaviour
             case GamePhase.FreefallAssembly:
                 OnFreefallAssemblyEnter.Invoke();
                 
-                // Zet het vallen AAN voor alle 3 de onderdelen
+                // Set fall ON for all three objects of the robot
                 SetScriptsActive(headObj, true);
                 SetScriptsActive(backpackObj, true);
                 SetScriptsActive(bodyObj, true);
                 break;
 
             case GamePhase.Parachute:
-                // HIER STOPPEN WE HET WOBBELEN VAN DE GEHELE EVE!
+                // Stop the wobbling of the whole bot
                 ModularWobble bodyWobble = bodyObj.GetComponent<ModularWobble>();
                 if (bodyWobble != null) bodyWobble.enabled = false;
 
@@ -74,7 +78,7 @@ public class RobotSequenceManager : MonoBehaviour
 
             case GamePhase.EndCredits:
                 OnEndCreditsEnter.Invoke();
-                StartCoroutine(BackToMenuDelay(4f)); // Gaat na credits terug naar StartMenu (dus reset!)
+                StartCoroutine(BackToMenuDelay(4f)); // From credits; go to startmenu
                 break;
         }
     }
@@ -85,19 +89,19 @@ public class RobotSequenceManager : MonoBehaviour
 
         if (neckSocket.hasSelection && backpackSocket.hasSelection)
         {
-            Debug.Log("EVE is compleet samengebouwd!");
+            Debug.Log("Robot is complete!");
             SwitchPhase(GamePhase.Parachute);
         }
     }
 
-    // --- DE MAGISCHE RESET FUNCTIE VOOR DE LOOP ---
+    // --- Reset function for the loop ---
     private void ResetRobotForNewRound()
     {
-        // Haal de items UIT de sockets als ze daar in zitten
+        // Retrieve items out of the sockets, if they are there
         if (neckSocket.hasSelection) neckSocket.interactionManager.CancelInteractorSelection((UnityEngine.XR.Interaction.Toolkit.Interactors.IXRSelectInteractor)neckSocket);
         if (backpackSocket.hasSelection) backpackSocket.interactionManager.CancelInteractorSelection((UnityEngine.XR.Interaction.Toolkit.Interactors.IXRSelectInteractor)backpackSocket);
 
-        // Reset elk object: ontkoppel ze, zet scripts aan, en zet ze op hun startplek
+        // Reset every object; disconnect them, activate scripts and put them back at their starting place
         ResetSinglePart(headObj, headStartPos);
         ResetSinglePart(backpackObj, backpackStartPos);
         ResetSinglePart(bodyObj, bodyStartPos);
@@ -105,21 +109,20 @@ public class RobotSequenceManager : MonoBehaviour
 
     private void ResetSinglePart(GameObject part, Vector3 startPos)
     {
-        // 1. Maak hem weer los (geen child meer van de body/socket)
         part.transform.SetParent(null); 
-        
-        // 2. Zet hem terug in de lucht
         part.transform.position = startPos; 
 
-        // 3. Zet fysica weer aan
         Rigidbody rb = part.GetComponent<Rigidbody>();
-        if (rb != null) rb.isKinematic = false;
+        if (rb != null) 
+        {
+            rb.isKinematic = true; // FIX: Dit MOET true zijn zodat we controle houden!
+            rb.linearVelocity = Vector3.zero; // Sloop alle snelheid eruit (gebruik rb.velocity in oudere Unity versies)
+            rb.angularVelocity = Vector3.zero; // Sloop alle rotatiekracht eruit
+        }
 
-        // 4. Zet vastpakken weer aan
         UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable grab = part.GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable>();
         if (grab != null) grab.enabled = true;
 
-        // 5. Reset de interne kill-switches in onze scripts
         AerodynamicPart aero = part.GetComponent<AerodynamicPart>();
         if (aero != null)
         {
@@ -131,7 +134,7 @@ public class RobotSequenceManager : MonoBehaviour
         if (wobble != null)
         {
             wobble.enabled = true;
-            wobble.ResetForNewRound(); // Roept de functie aan die we in de vorige stap maakten
+            wobble.ResetForNewRound();
         }
     }
 
@@ -144,4 +147,19 @@ public class RobotSequenceManager : MonoBehaviour
     private IEnumerator SkipIntroForNow() { yield return new WaitForSeconds(1f); SwitchPhase(GamePhase.FreefallAssembly); }
     private IEnumerator TransitionToCreditsDelay(float delay) { yield return new WaitForSeconds(delay); SwitchPhase(GamePhase.EndCredits); }
     private IEnumerator BackToMenuDelay(float delay) { yield return new WaitForSeconds(delay); SwitchPhase(GamePhase.StartMenu); }
+
+    public void ResetPlayerPosition()
+    // Move to starting pos
+    {
+        if (xrOrigin != null && couchAnchor != null)
+        {
+            xrOrigin.position = couchAnchor.position;
+            Debug.Log("Speler moves to start pos!");
+        }
+    }
+    public void TriggerStartGame()
+    {
+        // Go to intro video phase
+        SwitchPhase(GamePhase.IntroVideo);
+    }
 }
