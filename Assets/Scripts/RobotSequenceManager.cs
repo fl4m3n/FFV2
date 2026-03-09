@@ -2,7 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.XR.Interaction.Toolkit;
-
+using UnityEngine.XR.ARFoundation;
 
 public class RobotSequenceManager : MonoBehaviour
 {
@@ -29,6 +29,10 @@ public class RobotSequenceManager : MonoBehaviour
     public Transform xrOrigin; // XR Origin (whole rig)
     public Transform couchAnchor; // Anchor of where it needs to restart
 
+    [Header("Passthrough & Skybox Setup")]
+    public Camera mainVRCamera; // Main Cam
+    
+    private ARCameraBackground arBackground;
     private Vector3 headStartPos, backpackStartPos, bodyStartPos;
 
     void Start()
@@ -50,6 +54,7 @@ public class RobotSequenceManager : MonoBehaviour
         {
             case GamePhase.StartMenu:
                 ResetRobotForNewRound(); // Restore the robot
+                // SetPassthroughMode(true);
                 OnStartMenuEnter.Invoke();
                 break;
 
@@ -60,6 +65,7 @@ public class RobotSequenceManager : MonoBehaviour
 
             case GamePhase.FreefallAssembly:
                 OnFreefallAssemblyEnter.Invoke();
+                // SetPassthroughMode(false);
                 
                 // Set fall ON for all three objects of the robot
                 SetScriptsActive(headObj, true);
@@ -115,9 +121,9 @@ public class RobotSequenceManager : MonoBehaviour
         Rigidbody rb = part.GetComponent<Rigidbody>();
         if (rb != null) 
         {
-            rb.isKinematic = true; // FIX: Dit MOET true zijn zodat we controle houden!
-            rb.linearVelocity = Vector3.zero; // Sloop alle snelheid eruit (gebruik rb.velocity in oudere Unity versies)
-            rb.angularVelocity = Vector3.zero; // Sloop alle rotatiekracht eruit
+            rb.isKinematic = true; // FIX: to keep control this must be kinematic!
+            rb.linearVelocity = Vector3.zero; // stop all speed
+            rb.angularVelocity = Vector3.zero; // stop rotation
         }
 
         UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable grab = part.GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable>();
@@ -162,4 +168,29 @@ public class RobotSequenceManager : MonoBehaviour
         // Go to intro video phase
         SwitchPhase(GamePhase.IntroVideo);
     }
+
+    public void SetPassthroughMode(bool isActive)
+{
+    // We zoeken de AR Camera Background op de camera
+   
+    arBackground = mainVRCamera.GetComponent<ARCameraBackground>();
+
+    if (isActive)
+    {
+        // 1. Maak de camera achtergrond transparant (Alpha = 0)
+        mainVRCamera.clearFlags = CameraClearFlags.SolidColor;
+        mainVRCamera.backgroundColor = new Color(0, 0, 0, 0); 
+        
+        // 2. Zet de AR Background component AAN
+        if (arBackground != null) arBackground.enabled = true;
+    }
+    else
+    {
+        // 1. Terug naar de Skybox (je virtuele wereld)
+        mainVRCamera.clearFlags = CameraClearFlags.Skybox;
+        
+        // 2. Zet de AR Background component UIT
+        if (arBackground != null) arBackground.enabled = false;
+    }
+}
 }
