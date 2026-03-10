@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 2100000, guid: 6bfab16f387f95e4bb60f866299be241, type: 2}
+  m_SkyboxMaterial: {fileID: 2100000, guid: c2f65140676fb124eb1e04e23637fe38, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -383,7 +383,7 @@ Transform:
   m_GameObject: {fileID: 107392449}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 3.88, y: 0.5, z: 9.35}
+  m_LocalPosition: {x: -2.92, y: 0.5, z: 3.67}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -452,6 +452,8 @@ MonoBehaviour:
   currentPhase: 1
   neckSocket: {fileID: 857999389}
   backpackSocket: {fileID: 1483886411}
+  isHeadAttached: 0
+  isBackpackAttached: 0
   headObj: {fileID: 1864557611}
   backpackObj: {fileID: 863456799}
   bodyObj: {fileID: 1474340479}
@@ -482,9 +484,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1157684525}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
+      - m_Target: {fileID: 235866873}
+        m_TargetAssemblyTypeName: RobotSequenceManager, Assembly-CSharp
+        m_MethodName: SetPassthroughMode
         m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -492,11 +494,23 @@ MonoBehaviour:
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
-          m_BoolArgument: 0
+          m_BoolArgument: 1
         m_CallState: 2
       - m_Target: {fileID: 235866873}
         m_TargetAssemblyTypeName: RobotSequenceManager, Assembly-CSharp
-        m_MethodName: SetPassthroughMode
+        m_MethodName: ResetPlayerPosition
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 1157684525}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
         m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -574,10 +588,46 @@ MonoBehaviour:
         m_CallState: 2
   OnParachuteEnter:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1333991811}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1157684525}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   OnEndCreditsEnter:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1333991811}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
   xrOrigin: {fileID: 1764968937}
   couchAnchor: {fileID: 334611540}
   mainVRCamera: {fileID: 1993077621}
@@ -621,7 +671,7 @@ Transform:
   m_GameObject: {fileID: 334611539}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -881,6 +931,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 839fa55fbe2e7794ba39644ce79dc258, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PartLocker
+  sequenceManager: {fileID: 0}
 --- !u!4 &767184764 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400000, guid: 1cc11ffbe578fa547b800e780e45b9c1, type: 3}
@@ -1041,6 +1092,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 839fa55fbe2e7794ba39644ce79dc258, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PartLocker
+  sequenceManager: {fileID: 235866873}
 --- !u!135 &857999391
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -1094,7 +1146,7 @@ Transform:
   m_GameObject: {fileID: 863456799}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 8.46, y: 0.988, z: 1.42}
+  m_LocalPosition: {x: 4.62, y: 0.988, z: 8.12}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1417,7 +1469,7 @@ Transform:
   m_GameObject: {fileID: 871294531}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5.395, y: 0, z: 0}
+  m_LocalPosition: {x: 1.2, y: 0, z: 4.09}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1608,7 +1660,7 @@ Transform:
   m_GameObject: {fileID: 1238354295}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.69953156, y: 0.0000019073486, z: 3.2019253}
+  m_LocalPosition: {x: 1.48, y: 0.0000019073486, z: 3.55}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -6480,6 +6532,7 @@ GameObject:
   - component: {fileID: 1465258218}
   - component: {fileID: 1465258217}
   - component: {fileID: 1465258220}
+  - component: {fileID: 1465258221}
   m_Layer: 0
   m_Name: Start_Button
   m_TagString: Untagged
@@ -6615,18 +6668,6 @@ MonoBehaviour:
       m_Calls: []
   m_HoverEntered:
     m_PersistentCalls:
-      m_Calls: []
-  m_HoverExited:
-    m_PersistentCalls:
-      m_Calls: []
-  m_FirstSelectEntered:
-    m_PersistentCalls:
-      m_Calls: []
-  m_LastSelectExited:
-    m_PersistentCalls:
-      m_Calls: []
-  m_SelectEntered:
-    m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 235866873}
         m_TargetAssemblyTypeName: RobotSequenceManager, Assembly-CSharp
@@ -6640,6 +6681,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  m_HoverExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FirstSelectEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_LastSelectExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_SelectEntered:
+    m_PersistentCalls:
+      m_Calls: []
   m_SelectExited:
     m_PersistentCalls:
       m_Calls: []
@@ -6666,6 +6719,28 @@ MonoBehaviour:
   m_StartingInteractionStrengthFilters: []
   m_AutoFindParentInteractableInHierarchy: 0
   m_ParentInteractableObject: {fileID: 0}
+--- !u!114 &1465258221
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1465258215}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 115f1a2a50d85cd4b9d6dad4c95622be, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.XR.Interaction.Toolkit::UnityEngine.XR.Interaction.Toolkit.Filtering.XRPokeFilter
+  m_Interactable: {fileID: 1465258220}
+  m_PokeCollider: {fileID: 1465258217}
+  m_PokeConfiguration:
+    m_UseConstant: 1
+    m_ConstantValue:
+      m_PokeDirection: 3
+      m_InteractionDepthOffset: 0
+      m_EnablePokeAngleThreshold: 1
+      m_PokeAngleThreshold: 45
+    m_Variable: {fileID: 0}
 --- !u!1 &1474340479
 GameObject:
   m_ObjectHideFlags: 0
@@ -6778,7 +6853,7 @@ Transform:
   m_GameObject: {fileID: 1474340479}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.146, y: 1.24103, z: 2.05537}
+  m_LocalPosition: {x: -0.146, y: 1.24103, z: 7.71}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -7067,6 +7142,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 839fa55fbe2e7794ba39644ce79dc258, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PartLocker
+  sequenceManager: {fileID: 235866873}
 --- !u!114 &1483886411
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7584,7 +7660,7 @@ Transform:
   m_GameObject: {fileID: 1864557611}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.146, y: 3.427, z: 2.08}
+  m_LocalPosition: {x: 3.49, y: 1.86, z: 6.69}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -8350,6 +8426,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 839fa55fbe2e7794ba39644ce79dc258, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PartLocker
+  sequenceManager: {fileID: 0}
 --- !u!1 &2046972893
 GameObject:
   m_ObjectHideFlags: 0
@@ -8375,7 +8452,7 @@ Transform:
   m_GameObject: {fileID: 2046972893}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3.55, y: 0, z: 5.47}
+  m_LocalPosition: {x: -3.05, y: 0, z: 3.92}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
