@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.ARFoundation;
+using Unity.XR.CoreUtils;
 
 public class RobotSequenceManager : MonoBehaviour
 {
@@ -12,6 +13,8 @@ public class RobotSequenceManager : MonoBehaviour
     [Header("EVE Sockets")]
     public UnityEngine.XR.Interaction.Toolkit.Interactors.XRSocketInteractor neckSocket;
     public UnityEngine.XR.Interaction.Toolkit.Interactors.XRSocketInteractor backpackSocket;
+    public bool isHeadAttached = false;
+    public bool isBackpackAttached = false;
 
     [Header("All Robot Objects")]
     public GameObject headObj;
@@ -59,6 +62,7 @@ public class RobotSequenceManager : MonoBehaviour
                 break;
 
             case GamePhase.IntroVideo:
+                ResetRobotForNewRound();
                 OnIntroVideoEnter.Invoke();
                 StartCoroutine(SkipIntroForNow());
                 break;
@@ -90,15 +94,16 @@ public class RobotSequenceManager : MonoBehaviour
     }
 
     public void CheckAssemblyProgress()
-    {
-        if (currentPhase != GamePhase.FreefallAssembly) return;
+{
+    if (currentPhase != GamePhase.FreefallAssembly) return;
 
-        if (neckSocket.hasSelection && backpackSocket.hasSelection)
-        {
-            Debug.Log("Robot is complete!");
-            SwitchPhase(GamePhase.Parachute);
-        }
+    // Check with booleans
+    if (isHeadAttached && isBackpackAttached)
+    {
+        Debug.Log("Robot is compleet volgens de flags!");
+        SwitchPhase(GamePhase.Parachute);
     }
+}
 
     // --- Reset function for the loop ---
     private void ResetRobotForNewRound()
@@ -155,15 +160,22 @@ public class RobotSequenceManager : MonoBehaviour
     private IEnumerator BackToMenuDelay(float delay) { yield return new WaitForSeconds(delay); SwitchPhase(GamePhase.StartMenu); }
 
     public void ResetPlayerPosition()
-    // Move to starting pos
+{
+    XROrigin originScript = xrOrigin.GetComponent<XROrigin>();
+    
+    if (originScript != null && couchAnchor != null)
     {
-        if (xrOrigin != null && couchAnchor != null)
-        {
-            xrOrigin.position = couchAnchor.position;
-            xrOrigin.rotation = couchAnchor.rotation;
-            Debug.Log("Player moves to start pos!");
-        }
+        // Function exactly moves the rig, so that the cam is exactly on the pos of the anchor 
+        // and looks from the anchor
+        originScript.MatchOriginUpCameraForward(couchAnchor.up, couchAnchor.forward);
+        
+        // extra check
+        Vector3 offset = originScript.Camera.transform.position - xrOrigin.position;
+        xrOrigin.position = couchAnchor.position - offset;
+
+        Debug.Log("Player calibrated!");
     }
+}
     public void TriggerStartGame()
     {
         // Go to intro video phase

@@ -3,6 +3,8 @@ using UnityEngine.XR.Interaction.Toolkit;
 
 public class PartLocker : MonoBehaviour
 {
+    public RobotSequenceManager sequenceManager;
+
     public void LockPart(SelectEnterEventArgs args)
     {
         GameObject attachedPart = args.interactableObject.transform.gameObject;
@@ -43,7 +45,17 @@ public class PartLocker : MonoBehaviour
         {
             wobbleScript.enabled = false;
         }
+        if (sequenceManager != null)
+    {
+        if (attachedPart == sequenceManager.headObj) 
+            sequenceManager.isHeadAttached = true;
+        
+        if (attachedPart == sequenceManager.backpackObj) 
+            sequenceManager.isBackpackAttached = true;
 
+        // Check of we nu klaar zijn
+        sequenceManager.CheckAssemblyProgress();
+    }
         Debug.Log(attachedPart.name + " is perfect gelockt voor deze ronde!");
     }
 }
