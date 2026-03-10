@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 2100000, guid: 032ac1ca17833e44ca289c420ca787fa, type: 2}
+  m_SkyboxMaterial: {fileID: 2100000, guid: 6bfab16f387f95e4bb60f866299be241, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -449,7 +449,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e00c9914b09b32429fd582354c5a9a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RobotSequenceManager
-  currentPhase: 2
+  currentPhase: 1
   neckSocket: {fileID: 857999389}
   backpackSocket: {fileID: 1483886411}
   headObj: {fileID: 1864557611}
@@ -1378,8 +1378,8 @@ MonoBehaviour:
       inWeight: 0
       outWeight: 0
     - serializedVersion: 3
-      time: 59.118736
-      value: 20.24616
+      time: 43.353752
+      value: 40.87796
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -6986,8 +6986,8 @@ MonoBehaviour:
       inWeight: 0
       outWeight: 0
     - serializedVersion: 3
-      time: 128.53804
-      value: 9.665119
+      time: 92.37056
+      value: 25.190674
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -7474,7 +7474,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7630e45a6911944daf4dd2d60c17f98, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ObjectSpawner
-  objectPrefab: {fileID: 5425973701251685604, guid: 2f5624940739c5746aba1a58e3b75d56, type: 3}
+  objectPrefab: {fileID: 7068583431403511505, guid: 8bc6ddbdff0c18d4c8bdfdaf5dea98c7, type: 3}
   amountToSpawn: 5
   minHeight: -150
   maxHeight: 100
@@ -7868,13 +7868,13 @@ MonoBehaviour:
       inWeight: 0
       outWeight: 0
     - serializedVersion: 3
-      time: 98.62918
-      value: 30.586699
-      inSlope: -0.15193984
-      outSlope: -0.15193984
+      time: 35.88896
+      value: 56.983883
+      inSlope: 0.14905708
+      outSlope: 0.14905708
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.4410005
+      inWeight: 0.39732054
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -8203,7 +8203,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Unity.XR.ARFoundation::UnityEngine.XR.ARFoundation.ARCameraBackground
   m_UseCustomMaterial: 1
-  m_CustomMaterial: {fileID: 2100000, guid: c2f65140676fb124eb1e04e23637fe38, type: 2}
+  m_CustomMaterial: {fileID: 2100000, guid: 6bfab16f387f95e4bb60f866299be241, type: 2}
 --- !u!114 &1993077625
 MonoBehaviour:
   m_ObjectHideFlags: 0
