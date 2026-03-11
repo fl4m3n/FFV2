@@ -82,12 +82,12 @@ public class WebSocketClientExample : MonoBehaviour
         // Example message: "ax:ne"
 
         string axis = msg.Substring(0, msg.IndexOf(":"));
-        string value = msg.Substring(msg.IndexOf(":") + 1).Trim();
+        string direction = msg.Substring(msg.IndexOf(":") + 1).Trim();
 
         // Send to MoveHandler
         if (moveHandler != null)
         {
-            moveHandler.ReceiveMovementMessage(axis, value);
+            moveHandler.ReceiveMovementMessage(axis, direction);
         }
     }
 

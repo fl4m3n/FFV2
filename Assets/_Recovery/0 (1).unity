@@ -7359,9 +7359,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9bbecf0c5ef96d8419a61a3ce30416fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MoveHandler
-  xrOrigin: {fileID: 1764968937}
-  speed: 0.5
-  smoothing: 5
 --- !u!4 &1648832112
 Transform:
   m_ObjectHideFlags: 0
