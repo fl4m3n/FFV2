@@ -106,7 +106,7 @@ public class RobotSequenceManager : MonoBehaviour
 }
 
     // --- Reset function for the loop ---
-    private void ResetRobotForNewRound()
+    public void ResetRobotForNewRound()
     {
         // Retrieve items out of the sockets, if they are there
         if (neckSocket.hasSelection) neckSocket.interactionManager.CancelInteractorSelection((UnityEngine.XR.Interaction.Toolkit.Interactors.IXRSelectInteractor)neckSocket);

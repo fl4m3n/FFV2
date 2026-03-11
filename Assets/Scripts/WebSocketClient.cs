@@ -15,6 +15,7 @@ public class WebSocketClientExample : MonoBehaviour
     public int serverPort = 8081; // Replace with your server's port number (8081 is the default)
     
     public MoveHandler moveHandler;
+    public RestartHandler restartHandler;
 
     async void Start()
     {
@@ -79,16 +80,41 @@ public class WebSocketClientExample : MonoBehaviour
 
     public void IncomingMessageParser(string msg)
     {
-        // Example message: "ax:ne"
-
-        string axis = msg.Substring(0, msg.IndexOf(":"));
-        string direction = msg.Substring(msg.IndexOf(":") + 1).Trim();
-
-        // Send to MoveHandler
-        if (moveHandler != null)
-        {
-            moveHandler.ReceiveMovementMessage(axis, direction);
+        if (msg.IndexOf(":") == -1){
+            return;
         }
+
+        // Example messages: "ax:ne" / "buttonR:1"
+        string messageType = msg.Substring(0, msg.IndexOf(":"));
+        string messageValue = msg.Substring(msg.IndexOf(":") + 1).Trim();
+
+        // Send to MoveHandler if incoming message is from the gyroscope
+        if (messageType == "ax" || messageType == "ay"){
+            if (moveHandler != null)
+            {
+                moveHandler.ReceiveMovementMessage(messageType, messageValue);
+            }
+        }
+
+        // Send to RestartHandler if incoming message is from restart button
+        if (messageType == "buttonR"){
+            if (restartHandler != null){
+                // Convert value to int (0 or 1)
+                restartHandler.ReceiveMessage(messageType, int.Parse(messageValue));
+            }
+            
+        }
+        
+        /* TODO IMPLEMENT
+        // Send to ??? if incoming message is from parachute button
+        if (messageType == "buttonP"){
+            if (parachuteHandler != null){
+                // Convert value to int (0 or 1)
+                parachuteHandler.ReceiveMessage(int.Parse(messageValue));
+            }
+        }
+        */
+        
     }
 
 }

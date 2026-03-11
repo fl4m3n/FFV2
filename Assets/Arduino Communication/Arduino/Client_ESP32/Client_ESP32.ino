@@ -26,8 +26,15 @@ const uint16_t serverPort = 8081; //Replace with your desired Port (or keep as i
 // --------------------------------------------------
 // Hardware pins
 // --------------------------------------------------
+
+// SPARKFUN ESP32 Thing plus
 #define BUILTIN_BUTTON_PIN 0
-#define BUILTIN_POTENTIOMETER_PIN 5
+// #define GYRO 25
+#define BUTTON_RESTART 4
+
+#define xP 26
+#define yP 25
+
 
 // --------------------------------------------------
 // WebSocket events setup
@@ -61,17 +68,16 @@ void webSocketEvent(WStype_t type, uint8_t* payload, size_t length) {
 // WebSocket message handler. Edit for new RECEIVED WebSocket Messages
 // --------------------------------------------------
 void handleMessage(const String& message) { // This function is set up to receive and parse messages in the form of "TYPE:VALUE" (e.g. Led:55)
+  if (message == "reset") {
+    Serial.println("Reset command received");
+    ESP.restart();   // for ESP32 / ESP8266
+  }
+
   int sep = message.indexOf(':');
   if (sep == -1) return;
 
   String type = message.substring(0, sep);
   int value = message.substring(sep + 1).toInt();
-
-  if (type.equalsIgnoreCase("LED_INTENSITY")) { //If this ESP receives a Websocket message of type "LED_INTENSITY", then set the built in LED to the corresponding value
-    value = constrain(value, 0, 255);
-    ledSet(value);
-    Serial.printf("LED intensity → %d\n", value);
-  }
 
   if(type.equalsIgnoreCase("CUSTOM WEBSOCKET MESSAGE")) {
     //Do something
@@ -93,7 +99,20 @@ void setup() {
   Serial.println("=================================");
 
   pinMode(BUILTIN_BUTTON_PIN, INPUT_PULLUP);
-  pinMode(BUILTIN_POTENTIOMETER_PIN, INPUT);
+
+  // pinMode(BUTTON_0, INPUT_PULLUP);
+  // pinMode(BUTTON_1, INPUT_PULLUP);
+  // pinMode(BUTTON_2, INPUT_PULLUP);
+  // pinMode(BUTTON_3, INPUT_PULLUP);
+
+  //pinMode(GYRO, INPUT);
+  pinMode(BUTTON_RESTART, INPUT_PULLUP);
+
+  pinMode(xP, INPUT);
+  pinMode(yP, INPUT);
+
+  // pinMode(LAMP_PIN, OUTPUT);
+  // digitalWrite(LAMP_PIN, LOW);  // Start OFF
 
   #ifdef LED_TYPE_GPIO //If ESP32 regular or S2
     ledcAttach(LED_PIN, LEDC_FREQUENCY, LEDC_RESOLUTION);
@@ -118,6 +137,9 @@ void setup() {
   webSocket.begin(serverIP, serverPort, "/");
   webSocket.onEvent(webSocketEvent);
   webSocket.setReconnectInterval(5000);
+
+
+  // Set initial values of 
 }
 
 // --------------------------------------------------
@@ -127,9 +149,35 @@ void setup() {
 void loop() {
   webSocket.loop();
 
+  // Gyroscope readings
+  int px, py;
+  int ax, ay;
+
+  px = pulseIn(xP, HIGH);
+  py = pulseIn(yP, HIGH);
+
+  ax = ((px / 10) - 500) * 8;
+  ay = ((py / 10) - 500) * 8;
+
+  // Check what interval ax & ay are in
+  String axStatusCurrent = checkInterval(ax);
+  String ayStatusCurrent = checkInterval(ay);
+
+  // If the status is different from before, send the data
+  // fl = far left, sl = slightly left, ne = neutral, sr = slightly right, fr = far right
+  if (axStatusCurrent != axStatusPrevious) {
+    axStatusPrevious = axStatusCurrent;
+    Serial.println("ax:" + axStatusCurrent);
+    webSocket.sendTXT("ax:" + axStatusCurrent);
+  }
+  if (ayStatusCurrent != ayStatusPrevious) {
+    ayStatusPrevious = ayStatusCurrent;
+    Serial.println("ay:" + ayStatusCurrent);
+    webSocket.sendTXT("ay:" + ayStatusCurrent);
+  }
+
+  // Builtin Button readings
   bool currentButtonState = digitalRead(BUILTIN_BUTTON_PIN);
-  int currentPotentiometerState = analogRead(BUILTIN_POTENTIOMETER_PIN);  // reads 0-4095
-  currentPotentiometerState = map(currentPotentiometerState, 0, 4095, 0, 100); // maps to values 0-100
 
   if (lastButtonState == HIGH && currentButtonState == LOW) { //Sends Websocket Message when you push down the built in button
     webSocket.sendTXT("button:1");
@@ -142,22 +190,43 @@ void loop() {
   }
   lastButtonState = currentButtonState;
 
-  if (currentPotentiometerState != lastPotentiometerState) { //Sends Websocket Message when you turn the added potentiometer
-    webSocket.sendTXT(String("potentio:") + currentPotentiometerState);
-    Serial.println(String("Potentiometer at ") + currentPotentiometerState);
+
+  // Restart Button readings
+  bool currentButtonRestartState = digitalRead(BUTTON_RESTART);
+
+  if (lastButtonRestartState == HIGH && currentButtonRestartState == LOW) { //Sends Websocket Message when you push down the Restart button
+    webSocket.sendTXT("buttonR:1");
+    Serial.println("Button_Restart Down");
   }
-  lastPotentiometerState = currentPotentiometerState;
+
+  if (lastButtonRestartState == LOW && currentButtonRestartState == HIGH) { //Sends Websocket Message when you stop pushing the Restart button
+    webSocket.sendTXT("buttonR:0");
+    Serial.println("Button_Restart Up");
+  }
+  lastButtonRestartState = currentButtonRestartState;
 
   delay(100);
-
 }
 
+// --------------------------------------------------
+// Helper Functions
+// --------------------------------------------------
 
-
-
-
-
-
-
-
-
+String checkInterval(int gyroValue){
+  if (gyroValue < farLeft) {
+    return "fl";
+  }
+  else if (gyroValue > farLeft && gyroValue < slightlyLeft) {
+    return "sl";
+  }
+  else if (gyroValue > slightlyLeft && gyroValue < slightlyRight) {
+    return "ne";
+  }
+  else if (gyroValue > slightlyRight && gyroValue < farRight) {
+    return "sr";
+  }
+  else if (gyroValue > farRight) {
+    return "fr";
+  }
+  return "ne";
+}

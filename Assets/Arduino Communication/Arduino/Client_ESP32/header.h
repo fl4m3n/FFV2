@@ -37,10 +37,21 @@
 // --------------------------------------------------
 WebSocketsClient webSocket;
 bool lastButtonState = HIGH;
-int lastPotentiometerState = -1;
-int lastPotValue = -1;
+bool lastButtonRestartState = HIGH;
 unsigned long lastSendTime = 0;
 const unsigned long SEND_INTERVAL_MS = 50;
+
+
+// Defines how much the accelerometer needs to be turned before registering
+// WILL NEED TWEAKING STILL
+int farLeft = -300;
+int slightlyLeft = -150;
+int slightlyRight = 150;
+int farRight = 300;
+
+String ayStatusPrevious = "ne";
+String axStatusPrevious = "ne";
+
 
 // --------------------------------------------------
 // LEDC (PWM) settings
