@@ -1,17 +1,10 @@
-<!-- Place this file at the root of your Unity project.
-At the same level than the folders Assets/* -->
+# Freefall
 
-# [Name of the project]
-
-_Some examples are shown below but you should expand on each subtitle as much as needed to provide comprehensive information/ **MarkDown** reference is available here: <https://www.markdownguide.org/basic-syntax/>_
-
-Include the name, logo and images refering to your project
-
-![{Your App XR} logo](./docs/example-image.jpg)
+![Freefall logo](Docs/Freefall%20Poster.png)
 
 ## Introduction
 
-[Project XR ] is an educational XR experience that lets you explore in 3D [...] . Learn about [...].
+**Freefall** is a creative XR experience that lets you explore in 3D [...] . Learn about [...].
 
 The problem detected was...
 
