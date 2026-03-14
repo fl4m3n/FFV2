@@ -546,9 +546,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 4235305463907410741}
-        m_TargetAssemblyTypeName: setRobotFarAway, Assembly-CSharp
-        m_MethodName: setRobotFarBoolean
+      - m_Target: {fileID: 1939071157}
+        m_TargetAssemblyTypeName: SetRobotVisibility, Assembly-CSharp
+        m_MethodName: SetRobotFarBoolean
         m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -609,18 +609,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
-      - m_Target: {fileID: 4235305463907410741}
-        m_TargetAssemblyTypeName: setRobotFarAway, Assembly-CSharp
-        m_MethodName: setRobotFarBoolean
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
   OnFreefallAssemblyEnter:
     m_PersistentCalls:
       m_Calls:
@@ -671,6 +659,18 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 1939071157}
+        m_TargetAssemblyTypeName: SetRobotVisibility, Assembly-CSharp
+        m_MethodName: SetRobotFarBoolean
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
         m_CallState: 2
   OnParachuteEnter:
     m_PersistentCalls:
@@ -725,6 +725,18 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1939071157}
+        m_TargetAssemblyTypeName: SetRobotVisibility, Assembly-CSharp
+        m_MethodName: SetRobotFarBoolean
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
         m_CallState: 2
   xrOrigin: {fileID: 1764968937}
   couchAnchor: {fileID: 334611540}
@@ -9195,6 +9207,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1939071156}
+  - component: {fileID: 1939071157}
   m_Layer: 0
   m_Name: "=== ROBOT \U0001F916 ==="
   m_TagString: Untagged
@@ -9217,6 +9230,22 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1939071157
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1939071155}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb2f87982ac4e3346a3f07e58387ced9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::setRobotFarAway
+  robotParts:
+  - {fileID: 1864557611}
+  - {fileID: 863456799}
+  - {fileID: 1474340479}
 --- !u!1001 &1950282596
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9905,7 +9934,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3570513711536322958}
-  - component: {fileID: 4235305463907410741}
   m_Layer: 0
   m_Name: EVE-V1
   m_TagString: Untagged
@@ -9913,19 +9941,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &4235305463907410741
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4235305463907410740}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eb2f87982ac4e3346a3f07e58387ced9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::setRobotFarAway
-  robotEmptyGameObject: {fileID: 4235305463907410740}
 --- !u!1 &4527895580814260749
 GameObject:
   m_ObjectHideFlags: 0

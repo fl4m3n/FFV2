@@ -1,27 +1,32 @@
 using UnityEngine;
 
-public class setRobotFarAway : MonoBehaviour
+public class SetRobotVisibility : MonoBehaviour
 {
-    public GameObject robotEmptyGameObject;
+    [Header("Mesh targets")]
+    public GameObject[] robotParts; 
 
-    private void setPosRobot(bool active)
+    private void SetMeshVisibility(bool isVisible)
     {
-        // Check if the reference is assigned to avoid NullReferenceExceptions
-        if (robotEmptyGameObject == null) return;
-
-        if (active)
+        
+        foreach (GameObject part in robotParts)
         {
-            // Use .transform.position and assign a Vector3
-            robotEmptyGameObject.transform.position = new Vector3(1000, 1000, 1000);
-        }
-        else
-        {
-            robotEmptyGameObject.transform.position = Vector3.zero;
+            if (part != null)
+            {
+                // Retrieve MeshRenderer
+                MeshRenderer renderer = part.GetComponent<MeshRenderer>();
+                
+                if (renderer != null)
+                {
+                    // set renderer!
+                    renderer.enabled = !isVisible;
+                }
+            }
         }
     }
 
-    public void setRobotFarBoolean(bool active)
+    // method
+    public void SetRobotFarBoolean(bool active)
     {
-        setPosRobot(active);
+        SetMeshVisibility(active);
     }
 }
