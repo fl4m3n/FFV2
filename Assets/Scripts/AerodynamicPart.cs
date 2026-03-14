@@ -7,7 +7,7 @@ public class AerodynamicPart : MonoBehaviour
     public bool hasBeenGrabbed = false; 
 
     [Header("Targets")]
-    public Transform playerTarget; // Dit is je XR Origin / Camera
+    public Transform playerTarget; // This is the XR Origin / Camera
     public Transform anchorTarget; 
 
     [Header("Catch-Up Logic (Y-Axis)")]
