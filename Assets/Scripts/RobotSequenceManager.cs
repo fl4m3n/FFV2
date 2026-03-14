@@ -100,7 +100,7 @@ public class RobotSequenceManager : MonoBehaviour
     // Check with booleans
     if (isHeadAttached && isBackpackAttached)
     {
-        Debug.Log("Robot is compleet volgens de flags!");
+        Debug.Log("Robot is complete according to the flags!");
         SwitchPhase(GamePhase.Parachute);
     }
 }
