@@ -177,7 +177,7 @@ public class RobotSequenceManager : MonoBehaviour
         if (aero != null) aero.SetFreefallState(state);
     }
 
-    private IEnumerator SkipIntroForNow() { yield return new WaitForSeconds(1f); SwitchPhase(GamePhase.FreefallAssembly); }
+    private IEnumerator SkipIntroForNow() { yield return new WaitForSeconds(24f); SwitchPhase(GamePhase.FreefallAssembly); }
     private IEnumerator TransitionToCreditsDelay(float delay) { yield return new WaitForSeconds(delay); SwitchPhase(GamePhase.EndCredits); }
     private IEnumerator BackToMenuDelay(float delay) { yield return new WaitForSeconds(delay); SwitchPhase(GamePhase.StartMenu); }
 
