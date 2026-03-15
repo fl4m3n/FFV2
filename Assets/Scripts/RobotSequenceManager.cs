@@ -7,7 +7,7 @@ using Unity.XR.CoreUtils;
 
 public class RobotSequenceManager : MonoBehaviour
 {
-    public enum GamePhase { StartMenu, IntroVideo, FreefallAssembly, Parachute, EndCredits }
+    public enum GamePhase { StartMenu, IntroVideo, FreefallAssembly, FreefallComplete, EndCredits }
     public GamePhase currentPhase;
 
     [Header("EVE Sockets")]
@@ -25,7 +25,7 @@ public class RobotSequenceManager : MonoBehaviour
     public UnityEvent OnStartMenuEnter;
     public UnityEvent OnIntroVideoEnter;
     public UnityEvent OnFreefallAssemblyEnter;
-    public UnityEvent OnParachuteEnter;
+    public UnityEvent OnFreefallCompleteEnter;
     public UnityEvent OnEndCreditsEnter;
 
     [Header("Player Setup")]
@@ -45,7 +45,7 @@ public class RobotSequenceManager : MonoBehaviour
         backpackStartPos = backpackObj.transform.position;
         bodyStartPos = bodyObj.transform.position;
 
-        SwitchPhase(GamePhase.IntroVideo);
+        SwitchPhase(GamePhase.StartMenu);
     }
 
     public void SwitchPhase(GamePhase newPhase)
@@ -77,12 +77,12 @@ public class RobotSequenceManager : MonoBehaviour
                 SetScriptsActive(bodyObj, true);
                 break;
 
-            case GamePhase.Parachute:
+            case GamePhase.FreefallComplete:
                 // Stop the wobbling of the whole bot
                 ModularWobble bodyWobble = bodyObj.GetComponent<ModularWobble>();
                 if (bodyWobble != null) bodyWobble.enabled = false;
 
-                OnParachuteEnter.Invoke();
+                OnFreefallCompleteEnter.Invoke();
                 StartCoroutine(TransitionToCreditsDelay(5f));
                 break;
 
@@ -100,8 +100,8 @@ public class RobotSequenceManager : MonoBehaviour
     // Check with booleans
     if (isHeadAttached && isBackpackAttached)
     {
-        Debug.Log("Robot is compleet volgens de flags!");
-        SwitchPhase(GamePhase.Parachute);
+        Debug.Log("Robot is complete according to the flags!");
+        SwitchPhase(GamePhase.FreefallComplete);
     }
 }
 
@@ -110,11 +110,14 @@ public class RobotSequenceManager : MonoBehaviour
     {
         // Retrieve items out of the sockets, if they are there
         if (neckSocket.hasSelection) neckSocket.interactionManager.CancelInteractorSelection((UnityEngine.XR.Interaction.Toolkit.Interactors.IXRSelectInteractor)neckSocket);
-        if (backpackSocket.hasSelection) backpackSocket.interactionManager.CancelInteractorSelection((UnityEngine.XR.Interaction.Toolkit.Interactors.IXRSelectInteractor)backpackSocket);
+        if (backpackSocket.hasSelection) backpackSocket.interactionManager.CancelInteractorSelection((UnityEngine.XR.Interaction.Toolkit.Interactors.IXRSelectInteractor)backpackSocket);     
+        
 
         // Reset every object; disconnect them, activate scripts and put them back at their starting place
         ResetSinglePart(headObj, headStartPos);
+        isHeadAttached = false;
         ResetSinglePart(backpackObj, backpackStartPos);
+        isBackpackAttached = false;
         ResetSinglePart(bodyObj, bodyStartPos);
     }
 
@@ -131,8 +134,27 @@ public class RobotSequenceManager : MonoBehaviour
             rb.angularVelocity = Vector3.zero; // stop rotation
         }
 
-        UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable grab = part.GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable>();
+        var grab = part.GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable>();
+
+        try
+        {
+            if (grab != null && grab.isSelected)
+            {
+                foreach (var interactor in grab.interactorsSelecting)
+                {
+                    grab.interactionManager.CancelInteractableSelection((UnityEngine.XR.Interaction.Toolkit.Interactables.IXRSelectInteractable)grab);
+                }
+            }
+        }
+        catch
+        {
+            Debug.Log("Invalid operation error");
+        }
+
+        //UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable grab = part.GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable>();
         if (grab != null) grab.enabled = true;
+
+
 
         AerodynamicPart aero = part.GetComponent<AerodynamicPart>();
         if (aero != null)
