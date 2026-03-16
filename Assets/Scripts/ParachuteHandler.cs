@@ -2,15 +2,14 @@ using UnityEngine;
 
 public class ParachuteHandler : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
+    public RobotSequenceManager robotSequenceManager;
 
-    // Update is called once per frame
-    void Update()
+    public void ReceiveMessage(string messageType, int value)
     {
-        
+        if (value == 1){
+            if (robotSequenceManager != null){
+                robotSequenceManager.SwitchPhase(RobotSequenceManager.GamePhase.EndCredits);
+            }
+        }
     }
 }

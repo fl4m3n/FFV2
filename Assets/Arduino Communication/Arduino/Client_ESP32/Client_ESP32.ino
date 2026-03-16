@@ -73,6 +73,11 @@ void handleMessage(const String& message) { // This function is set up to receiv
     ESP.restart();   // for ESP32 / ESP8266
   }
 
+  if(message == ("ping")) {
+    Serial.println("pong");
+    webSocket.sendTXT("pong");
+  }
+
   int sep = message.indexOf(':');
   if (sep == -1) return;
 
