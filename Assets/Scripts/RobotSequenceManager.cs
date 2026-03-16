@@ -88,7 +88,7 @@ public class RobotSequenceManager : MonoBehaviour
 
             case GamePhase.EndCredits:
                 OnEndCreditsEnter.Invoke();
-                StartCoroutine(BackToMenuDelay(4f)); // From credits; go to startmenu
+                StartCoroutine(BackToMenuDelay(15f)); // From credits; go to startmenu
                 break;
         }
     }
