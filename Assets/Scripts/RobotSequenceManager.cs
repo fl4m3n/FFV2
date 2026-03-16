@@ -78,11 +78,12 @@ public class RobotSequenceManager : MonoBehaviour
                 break;
 
             case GamePhase.FreefallComplete:
+                OnFreefallCompleteEnter.Invoke();
+
                 // Stop the wobbling of the whole bot
                 ModularWobble bodyWobble = bodyObj.GetComponent<ModularWobble>();
                 if (bodyWobble != null) bodyWobble.enabled = false;
 
-                OnFreefallCompleteEnter.Invoke();
                 StartCoroutine(TransitionToCreditsDelay(5f));
                 break;
 
