@@ -21,6 +21,9 @@ public class RobotSequenceManager : MonoBehaviour
     public GameObject backpackObj;
     public GameObject bodyObj; // Body is main obj
 
+    [Header("Robot movement Freefall Complete")]
+    public RobotFollow robotFollow;
+
     [Header("Phase Events")]
     public UnityEvent OnStartMenuEnter;
     public UnityEvent OnIntroVideoEnter;
@@ -45,6 +48,10 @@ public class RobotSequenceManager : MonoBehaviour
         backpackStartPos = backpackObj.transform.position;
         bodyStartPos = bodyObj.transform.position;
 
+        // Set Robot follow mode for Freefall complete Phase
+        robotFollow.targetCamera = mainVRCamera.transform;
+        robotFollow.SetActive(false);
+
         SwitchPhase(GamePhase.StartMenu);
     }
 
@@ -56,6 +63,9 @@ public class RobotSequenceManager : MonoBehaviour
         switch (currentPhase)
         {
             case GamePhase.StartMenu:
+
+                robotFollow.SetActive(false);
+
                 ResetRobotForNewRound(); // Restore the robot
                 // SetPassthroughMode(true);
                 OnStartMenuEnter.Invoke();
@@ -79,14 +89,18 @@ public class RobotSequenceManager : MonoBehaviour
 
             case GamePhase.FreefallComplete:
                 OnFreefallCompleteEnter.Invoke();
+
+                // Stop the wobbling of the whole bot
+                ModularWobble bodyWobble = bodyObj.GetComponent<ModularWobble>();
+                if (bodyWobble != null) bodyWobble.enabled = false;
+
+                robotFollow.SetActive(true);
                 break;
 
             case GamePhase.EndCredits:
                 OnEndCreditsEnter.Invoke();
 
-                // Stop the wobbling of the whole bot
-                ModularWobble bodyWobble = bodyObj.GetComponent<ModularWobble>();
-                if (bodyWobble != null) bodyWobble.enabled = false;
+                robotFollow.SetActive(false);
 
                 StartCoroutine(BackToMenuDelay(15f)); // From credits; go to startmenu
                 break;
@@ -232,6 +246,5 @@ public class RobotSequenceManager : MonoBehaviour
     public void deployParachute(float delay)
     {
         StartCoroutine(TransitionToCreditsDelay(delay));
-        Debug.Log("Deploy parachute");
     }
 }
