@@ -79,16 +79,15 @@ public class RobotSequenceManager : MonoBehaviour
 
             case GamePhase.FreefallComplete:
                 OnFreefallCompleteEnter.Invoke();
+                break;
+
+            case GamePhase.EndCredits:
+                OnEndCreditsEnter.Invoke();
 
                 // Stop the wobbling of the whole bot
                 ModularWobble bodyWobble = bodyObj.GetComponent<ModularWobble>();
                 if (bodyWobble != null) bodyWobble.enabled = false;
 
-                StartCoroutine(TransitionToCreditsDelay(5f));
-                break;
-
-            case GamePhase.EndCredits:
-                OnEndCreditsEnter.Invoke();
                 StartCoroutine(BackToMenuDelay(15f)); // From credits; go to startmenu
                 break;
         }
@@ -104,7 +103,7 @@ public class RobotSequenceManager : MonoBehaviour
         Debug.Log("Robot is complete according to the flags!");
         SwitchPhase(GamePhase.FreefallComplete);
     }
-}
+}   
 
     // --- Reset function for the loop ---
     public void ResetRobotForNewRound()
@@ -183,22 +182,22 @@ public class RobotSequenceManager : MonoBehaviour
     private IEnumerator BackToMenuDelay(float delay) { yield return new WaitForSeconds(delay); SwitchPhase(GamePhase.StartMenu); }
 
     public void ResetPlayerPosition()
-{
-    XROrigin originScript = xrOrigin.GetComponent<XROrigin>();
-    
-    if (originScript != null && couchAnchor != null)
     {
-        // Function exactly moves the rig, so that the cam is exactly on the pos of the anchor 
-        // and looks from the anchor
-        originScript.MatchOriginUpCameraForward(couchAnchor.up, couchAnchor.forward);
+        XROrigin originScript = xrOrigin.GetComponent<XROrigin>();
         
-        // extra check
-        Vector3 offset = originScript.Camera.transform.position - xrOrigin.position;
-        xrOrigin.position = couchAnchor.position - offset;
+        if (originScript != null && couchAnchor != null)
+        {
+            // Function exactly moves the rig, so that the cam is exactly on the pos of the anchor 
+            // and looks from the anchor
+            originScript.MatchOriginUpCameraForward(couchAnchor.up, couchAnchor.forward);
+            
+            // extra check
+            Vector3 offset = originScript.Camera.transform.position - xrOrigin.position;
+            xrOrigin.position = couchAnchor.position - offset;
 
-        Debug.Log("Player calibrated!");
+            Debug.Log("Player calibrated!");
+        }
     }
-}
     public void TriggerStartGame()
     {
         // Go to intro video phase
@@ -206,27 +205,33 @@ public class RobotSequenceManager : MonoBehaviour
     }
 
     public void SetPassthroughMode(bool isActive)
-{
-    // Searching for AR Cam Background
-   
-    arBackground = mainVRCamera.GetComponent<ARCameraBackground>();
+    {
+        // Searching for AR Cam Background
+    
+        arBackground = mainVRCamera.GetComponent<ARCameraBackground>();
 
-    if (isActive)
-    {
-        // 1. Make cam background transparant (Alpha = 0)
-        mainVRCamera.clearFlags = CameraClearFlags.SolidColor;
-        mainVRCamera.backgroundColor = new Color(0, 0, 0, 0); 
-        
-        // 2. SET AR Background ON
-        if (arBackground != null) arBackground.enabled = true;
+        if (isActive)
+        {
+            // 1. Make cam background transparant (Alpha = 0)
+            mainVRCamera.clearFlags = CameraClearFlags.SolidColor;
+            mainVRCamera.backgroundColor = new Color(0, 0, 0, 0); 
+            
+            // 2. SET AR Background ON
+            if (arBackground != null) arBackground.enabled = true;
+        }
+        else
+        {
+            // 1. Back to Skybox
+            mainVRCamera.clearFlags = CameraClearFlags.Skybox;
+            
+            // 2. Set AR BG off
+            if (arBackground != null) arBackground.enabled = false;
+        }
     }
-    else
+
+    public void deployParachute(float delay)
     {
-        // 1. Back to Skybox
-        mainVRCamera.clearFlags = CameraClearFlags.Skybox;
-        
-        // 2. Set AR BG off
-        if (arBackground != null) arBackground.enabled = false;
+        StartCoroutine(TransitionToCreditsDelay(delay));
+        Debug.Log("Deploy parachute");
     }
-}
 }

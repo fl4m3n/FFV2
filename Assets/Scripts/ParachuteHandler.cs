@@ -8,7 +8,7 @@ public class ParachuteHandler : MonoBehaviour
     {
         if (value == 1){
             if (robotSequenceManager != null){
-                robotSequenceManager.SwitchPhase(RobotSequenceManager.GamePhase.EndCredits);
+                robotSequenceManager.deployParachute(delay:0f);
             }
         }
     }
