@@ -67,7 +67,7 @@ public class RobotFollow : MonoBehaviour
 
         // Make robot face the camera with delay
         Vector3 direction = targetCamera.position - rb.position;
-        direction.y = 0f;
+        // direction.y = 0f;
 
         if (direction.sqrMagnitude > 0.001f)
         {
