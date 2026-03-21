@@ -4,7 +4,7 @@
 
 ## Introduction
 
-**Freefall** is a creative XR experience that lets you explore in 3D [...] . Learn about [...].
+**Freefall** is an experience where you feel what it’s actually like to fall through Earth’s atmosphere. Wind and environmental effects create a fully immersive sensation of descent. As you fall, you must reassemble your broken robot companion so it can join you on the journey.
 
 The problem detected was...
 
