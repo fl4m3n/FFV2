@@ -24,6 +24,17 @@ Our User Persona is "The Escapist". Someone who wants a short break from reality
 
 <img width="1875" height="697" alt="image" src="https://github.com/user-attachments/assets/6a6950c5-fa8e-4a04-b228-7e0ca88db029" />
 
+**User Journey**
+*Start*
+User wakes up in a plane high in the sky, next to its robot. The robot falls. You jump after it.
+*Mid air*
+Your beloved robot is in pieces. Piece the robot together in air.
+*Reward*
+Once finished, the chaotic freefall atmosphere shifts to a serene and peaceful environment. Just chilling with your robot friend.
+*End*
+You deploy the parachute; everything fades to black and you ‘wake up’ again.
+
+
 For example:
 - Brainstorming: A screenshot of the whiteboard or post-it notes used to land the project's idea.
 - User Research: Pictures and summary of how you conducted user research, such as surveys, interviews, or observations, and what insights you gained from it.
