@@ -55,7 +55,7 @@ Material:
     - _QueueOffset: 0
     - _XRMotionVectorsPass: 1
     m_Colors:
-    - _BaseColor: {r: 0.51433533, g: 0.6320754, b: 0.30113026, a: 1}
+    - _BaseColor: {r: 0.26786238, g: 0.31132078, b: 0.11894804, a: 1}
     - _Vector2DInput: {r: 0.5, g: 0.5, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

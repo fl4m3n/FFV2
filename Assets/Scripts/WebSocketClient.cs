@@ -16,6 +16,7 @@ public class WebSocketClientExample : MonoBehaviour
     
     public MoveHandler moveHandler;
     public RestartHandler restartHandler;
+    public ParachuteHandler parachuteHandler;
 
     async void Start()
     {
@@ -105,15 +106,14 @@ public class WebSocketClientExample : MonoBehaviour
             
         }
         
-        /* TODO IMPLEMENT
-        // Send to ??? if incoming message is from parachute button
+        // Send to parachuteHandler if incoming message is from parachute button
         if (messageType == "buttonP"){
             if (parachuteHandler != null){
                 // Convert value to int (0 or 1)
-                parachuteHandler.ReceiveMessage(int.Parse(messageValue));
+                parachuteHandler.ReceiveMessage(messageType, int.Parse(messageValue));
             }
         }
-        */
+        
         
     }
 

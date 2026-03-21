@@ -20,7 +20,7 @@
 // --------------------------------------------------
 const char *ssid = "dsv-extrality-lab";            // Enter your Wi-Fi name
 const char *password = "expiring-unstuck-slider";  // Enter Wi-Fi password
-const char* serverIP = "10.204.0.28"; //Replace with your Python server's IP (e.g. 192.168.1.111)
+const char* serverIP = "10.204.0.27"; //Replace with your Python server's IP (e.g. 192.168.1.111)
 const uint16_t serverPort = 8081; //Replace with your desired Port (or keep as is)
 
 // --------------------------------------------------
@@ -71,6 +71,11 @@ void handleMessage(const String& message) { // This function is set up to receiv
   if (message == "reset") {
     Serial.println("Reset command received");
     ESP.restart();   // for ESP32 / ESP8266
+  }
+
+  if(message == ("ping")) {
+    Serial.println("pong");
+    webSocket.sendTXT("pong");
   }
 
   int sep = message.indexOf(':');

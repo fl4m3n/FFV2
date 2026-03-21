@@ -21,6 +21,9 @@ public class RobotSequenceManager : MonoBehaviour
     public GameObject backpackObj;
     public GameObject bodyObj; // Body is main obj
 
+    [Header("Robot movement Freefall Complete")]
+    public RobotFollow robotFollow;
+
     [Header("Phase Events")]
     public UnityEvent OnStartMenuEnter;
     public UnityEvent OnIntroVideoEnter;
@@ -45,6 +48,10 @@ public class RobotSequenceManager : MonoBehaviour
         backpackStartPos = backpackObj.transform.position;
         bodyStartPos = bodyObj.transform.position;
 
+        // Set Robot follow mode for Freefall complete Phase
+        robotFollow.targetCamera = mainVRCamera.transform;
+        robotFollow.SetActive(false);
+
         SwitchPhase(GamePhase.StartMenu);
     }
 
@@ -56,6 +63,9 @@ public class RobotSequenceManager : MonoBehaviour
         switch (currentPhase)
         {
             case GamePhase.StartMenu:
+
+                robotFollow.SetActive(false);
+
                 ResetRobotForNewRound(); // Restore the robot
                 // SetPassthroughMode(true);
                 OnStartMenuEnter.Invoke();
@@ -78,17 +88,21 @@ public class RobotSequenceManager : MonoBehaviour
                 break;
 
             case GamePhase.FreefallComplete:
+                OnFreefallCompleteEnter.Invoke();
+
                 // Stop the wobbling of the whole bot
                 ModularWobble bodyWobble = bodyObj.GetComponent<ModularWobble>();
                 if (bodyWobble != null) bodyWobble.enabled = false;
 
-                OnFreefallCompleteEnter.Invoke();
-                StartCoroutine(TransitionToCreditsDelay(5f));
+                robotFollow.SetActive(true);
                 break;
 
             case GamePhase.EndCredits:
                 OnEndCreditsEnter.Invoke();
-                StartCoroutine(BackToMenuDelay(4f)); // From credits; go to startmenu
+
+                robotFollow.SetActive(false);
+
+                StartCoroutine(BackToMenuDelay(15f)); // From credits; go to startmenu
                 break;
         }
     }
@@ -103,7 +117,7 @@ public class RobotSequenceManager : MonoBehaviour
         Debug.Log("Robot is complete according to the flags!");
         SwitchPhase(GamePhase.FreefallComplete);
     }
-}
+}   
 
     // --- Reset function for the loop ---
     public void ResetRobotForNewRound()
@@ -177,27 +191,27 @@ public class RobotSequenceManager : MonoBehaviour
         if (aero != null) aero.SetFreefallState(state);
     }
 
-    private IEnumerator SkipIntroForNow() { yield return new WaitForSeconds(1f); SwitchPhase(GamePhase.FreefallAssembly); }
+    private IEnumerator SkipIntroForNow() { yield return new WaitForSeconds(24f); SwitchPhase(GamePhase.FreefallAssembly); }
     private IEnumerator TransitionToCreditsDelay(float delay) { yield return new WaitForSeconds(delay); SwitchPhase(GamePhase.EndCredits); }
     private IEnumerator BackToMenuDelay(float delay) { yield return new WaitForSeconds(delay); SwitchPhase(GamePhase.StartMenu); }
 
     public void ResetPlayerPosition()
-{
-    XROrigin originScript = xrOrigin.GetComponent<XROrigin>();
-    
-    if (originScript != null && couchAnchor != null)
     {
-        // Function exactly moves the rig, so that the cam is exactly on the pos of the anchor 
-        // and looks from the anchor
-        originScript.MatchOriginUpCameraForward(couchAnchor.up, couchAnchor.forward);
+        XROrigin originScript = xrOrigin.GetComponent<XROrigin>();
         
-        // extra check
-        Vector3 offset = originScript.Camera.transform.position - xrOrigin.position;
-        xrOrigin.position = couchAnchor.position - offset;
+        if (originScript != null && couchAnchor != null)
+        {
+            // Function exactly moves the rig, so that the cam is exactly on the pos of the anchor 
+            // and looks from the anchor
+            originScript.MatchOriginUpCameraForward(couchAnchor.up, couchAnchor.forward);
+            
+            // extra check
+            Vector3 offset = originScript.Camera.transform.position - xrOrigin.position;
+            xrOrigin.position = couchAnchor.position - offset;
 
-        Debug.Log("Player calibrated!");
+            Debug.Log("Player calibrated!");
+        }
     }
-}
     public void TriggerStartGame()
     {
         // Go to intro video phase
@@ -205,27 +219,32 @@ public class RobotSequenceManager : MonoBehaviour
     }
 
     public void SetPassthroughMode(bool isActive)
-{
-    // Searching for AR Cam Background
-   
-    arBackground = mainVRCamera.GetComponent<ARCameraBackground>();
+    {
+        // Searching for AR Cam Background
+    
+        arBackground = mainVRCamera.GetComponent<ARCameraBackground>();
 
-    if (isActive)
-    {
-        // 1. Make cam background transparant (Alpha = 0)
-        mainVRCamera.clearFlags = CameraClearFlags.SolidColor;
-        mainVRCamera.backgroundColor = new Color(0, 0, 0, 0); 
-        
-        // 2. SET AR Background ON
-        if (arBackground != null) arBackground.enabled = true;
+        if (isActive)
+        {
+            // 1. Make cam background transparant (Alpha = 0)
+            mainVRCamera.clearFlags = CameraClearFlags.SolidColor;
+            mainVRCamera.backgroundColor = new Color(0, 0, 0, 0); 
+            
+            // 2. SET AR Background ON
+            if (arBackground != null) arBackground.enabled = true;
+        }
+        else
+        {
+            // 1. Back to Skybox
+            mainVRCamera.clearFlags = CameraClearFlags.Skybox;
+            
+            // 2. Set AR BG off
+            if (arBackground != null) arBackground.enabled = false;
+        }
     }
-    else
+
+    public void deployParachute(float delay)
     {
-        // 1. Back to Skybox
-        mainVRCamera.clearFlags = CameraClearFlags.Skybox;
-        
-        // 2. Set AR BG off
-        if (arBackground != null) arBackground.enabled = false;
+        StartCoroutine(TransitionToCreditsDelay(delay));
     }
-}
 }
