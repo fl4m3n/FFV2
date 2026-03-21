@@ -13,6 +13,16 @@ The proposed solution is valuable because...
 ## Design Process
 
 [_Add evidence on the general overview of how you planned, designed, and developed your project, including the goals, challenges, and solutions._]
+**Brainstorming**
+We quickly realized we wanted to make something different. And sketched out this rough idea:
+<img width="789" height="592" alt="image" src="https://github.com/user-attachments/assets/0690206a-6966-4ed0-9ac6-43bc0c189632" />
+
+**User Persona**
+Our User Persona is "The Escapist". Someone who wants a short break from reality, and is searching for more than just a game. An Experience.
+<img width="445" height="444" alt="image" src="https://github.com/user-attachments/assets/99c3dd05-34c1-4f80-801d-e1820e563b16" />
+[Source: https://thewarrioronline.com/2021/02/14/the-pleasures-of-escapism/]
+
+<img width="1875" height="697" alt="image" src="https://github.com/user-attachments/assets/6a6950c5-fa8e-4a04-b228-7e0ca88db029" />
 
 For example:
 - Brainstorming: A screenshot of the whiteboard or post-it notes used to land the project's idea.
