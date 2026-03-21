@@ -26,7 +26,7 @@ Freefall combines software and custom tangible interfaces to create a full-body 
     * Translates real-time body orientation into 1D movement along the X-axis for body-steering.
 * **Hardware Calibration:** A physical **recalibrate button** is integrated into the setup. This allows the facilitator to instantly reset the virtual world's orientation to match the user's physical position in the hammock.
 * **Facilitator Control (Wizard of Oz Backend):** We implemented a back-end solution featuring command-line scripts. This allows a facilitator to execute core commands, such as remotely executing a recalibration or triggering the parachute event.
-* **Wizard of Oz Parachute:** The climax of the experience—pulling the parachute—is facilitated using a "Wizard of Oz" technique to ensure a seamless and tactile transition out of the freefall. This is also used as a safety trigger in case of nausea or when getting too close to the ground.
+* **Wizard of Oz Parachute:** The climax of the experience, pulling the parachute, is facilitated using a "Wizard of Oz" technique to ensure a seamless and tactile transition out of the freefall. This is also used as a safety trigger in case of nausea or when getting too close to the ground.
 * **Passthrough Grounding:** To ensure a safe offboarding, the experience ends by returning to the starting screen in AR passthrough mode, helping ground the user before they take off the headset.
 
 **Watch the demo video of our physical setup here:**
