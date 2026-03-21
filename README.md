@@ -1,8 +1,8 @@
 # Freefall
 
-![Freefall XR Logo/Poster](./Docs/FreeFall_Poster.png) 
+![Freefall Poster](./Docs/FreeFall_Poster.png) 
 
-[YET A PICTURE NEEDED OF LOGO]
+![Logo](./Docs/FreeFall_logo.png) 
 ## Introduction
 
 **Freefall** is an experience where you feel what it’s actually like to fall through Earth’s atmosphere. Wind and environmental effects create a fully immersive sensation of descent. Amidst the chaos of the fall, the user has a clear goal: using only their hands, they must reassemble their broken robot companion so it can safely join them on the rest of the journey.
