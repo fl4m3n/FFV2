@@ -29,9 +29,6 @@ Freefall combines software and custom tangible interfaces to create a full-body 
 * **Wizard of Oz Parachute:** The climax of the experience, pulling the parachute, is facilitated using a "Wizard of Oz" technique to ensure a seamless and tactile transition out of the freefall. This is also used as a safety trigger in case of nausea or when getting too close to the ground.
 * **Passthrough Grounding:** To ensure a safe offboarding, the experience ends by returning to the starting screen in AR passthrough mode, helping ground the user before they take off the headset.
 
-**Watch the demo video of our physical setup here:**
-[Link to Demo Video](https://your-link-here.com)
-
 ## Design Process
 
 Our design journey focused heavily on rapid prototyping.
@@ -53,6 +50,16 @@ Our design journey focused heavily on rapid prototyping.
 
 <img width="400" alt="Image of the MoSCoW method applied" src="https://github.com/user-attachments/assets/eafc817c-7d4b-4031-859f-c95284ab068b" /><br>
 *The MoSCoW method applied to prioritize features.*
+
+### Design Document
+<p float="left">
+  <img src="Docs/Design Document Pages/Design Doc P1.jpg" width="49%" />
+  <img src="Docs/Design Document Pages/Design Doc P2.jpg" width="49%" />
+</p>
+<p float="left">
+  <img src="Docs/Design Document Pages/Design Doc P3.jpg" width="49%"/>
+  <img src="Docs/Design Document Pages/Design Doc P4.jpg" width="49%"/>
+</p>
 
 ## Installation
 
